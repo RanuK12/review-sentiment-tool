@@ -40,8 +40,8 @@ class TestSentimentAnalyzer(unittest.TestCase):
         ]
         for review in negative_reviews:
             polarity, sentiment = analyze_sentiment(review)
-            self.assertLess(polarity, -0.15, f"¡Ups! No se detectó como negativa: '{review}' (polaridad={polarity})")
-            self.assertEqual(sentiment, "Negativo", f"Esperaba 'Negativo' para: '{review}', pero fue '{sentiment}'")
+            self.assertLess(polarity, -0.25, f"¡Ups! No se detectó como negativa: '{review}' (polaridad={polarity})")
+            self.assertEqual(sentiment, "Negativo", f"Sentimiento incorrecto para: '{review}'")
 
     def test_neutral_reviews(self):
         """¿Y las reseñas neutrales? También son importantes."""
@@ -52,7 +52,7 @@ class TestSentimentAnalyzer(unittest.TestCase):
         ]
         for review in neutral_reviews:
             polarity, sentiment = analyze_sentiment(review)
-            self.assertTrue(-0.3 <= polarity <= 0.3, f"No se detectó como neutral: '{review}' (polaridad={polarity})")
+            self.assertTrue(-0.25 <= polarity <= 0.25, f"No se detectó como neutral: '{review}' (polaridad={polarity})")
             self.assertEqual(sentiment, "Neutral", f"Sentimiento incorrecto para: '{review}'")
 
     def test_batch_analysis(self):
