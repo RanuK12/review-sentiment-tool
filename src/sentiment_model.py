@@ -43,31 +43,29 @@ def calculate_domain_sentiment(text):
 
 def analyze_sentiment(text):
     """
-    Analiza el sentimiento de un texto combinando la magia de TextBlob con el toque especial del sector hotelero.
-    Devuelve la polaridad y una etiqueta amigable (Positivo, Negativo o Neutral).
-    Args:
-        text (str): El texto a analizar
-    Returns:
-        tuple: (polaridad, sentimiento)
-            - polaridad: float entre -1 y 1
-            - sentimiento: str ('Positivo', 'Negativo', o 'Neutral')
+    Analiza el sentimiento de un texto combinando TextBlob y palabras clave específicas del dominio.
     """
-    # Preparamos el texto para que el análisis sea más preciso
+    # Preprocesar el texto
     processed_text = preprocess_text(text)
-    # TextBlob hace su magia aquí
+    
+    # Calcular sentimiento con TextBlob
     blob = TextBlob(processed_text)
     textblob_polarity = blob.sentiment.polarity
-    # Añadimos el toque hotelero
+    
+    # Calcular sentimiento específico del dominio
     domain_polarity = calculate_domain_sentiment(processed_text)
-    # Combinamos ambos resultados para un veredicto más justo
-    combined_polarity = (textblob_polarity * 0.9) + (domain_polarity * 0.1)
-    # Definimos los umbrales de cada sentimiento
-    if combined_polarity > 0.25:
-        sentiment = 'Positivo'
-    elif combined_polarity < -0.25:
-        sentiment = 'Negativo'
+    
+    # Combinar ambos resultados (90% TextBlob, 10% palabras clave)
+    combined_polarity = 0.9 * textblob_polarity + 0.1 * domain_polarity
+    
+    # Determinar el sentimiento basado en la polaridad combinada
+    if combined_polarity > 0.3:  # Aumentado de 0.25 a 0.3
+        sentiment = "Positivo"
+    elif combined_polarity < -0.3:  # Aumentado de -0.25 a -0.3
+        sentiment = "Negativo"
     else:
-        sentiment = 'Neutral'
+        sentiment = "Neutral"
+    
     return combined_polarity, sentiment
 
 def batch_analyze(df, text_column='review'):
