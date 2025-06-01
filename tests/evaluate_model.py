@@ -120,49 +120,79 @@ def plot_results(evaluation_results):
     """
     Genera y guarda gráficos visuales para entender mejor el desempeño del modelo.
     """
+    # Configurar el estilo de los gráficos
+    plt.style.use('default')
+    
     # Plot confusion matrix
-    plt.figure(figsize=(10, 8))
-    sns.heatmap(evaluation_results['confusion_matrix'], 
+    plt.figure(figsize=(12, 8))
+    cm = evaluation_results['confusion_matrix']
+    total = cm.sum()
+    cm_percentage = cm.astype('float') / total * 100
+    
+    sns.heatmap(cm_percentage, 
                 annot=True, 
-                fmt='d', 
-                cmap='Blues',
+                fmt='.1f', 
+                cmap='YlOrRd',
                 xticklabels=['Positivo', 'Neutral', 'Negativo'],
                 yticklabels=['Positivo', 'Neutral', 'Negativo'])
-    plt.title('Matriz de Confusión')
-    plt.xlabel('Predicción')
-    plt.ylabel('Valor Real')
+    plt.title('Matriz de Confusión (Porcentajes)', pad=20, fontsize=14)
+    plt.xlabel('Predicción', fontsize=12)
+    plt.ylabel('Valor Real', fontsize=12)
     plt.tight_layout()
-    plt.savefig('confusion_matrix.png')
+    plt.savefig('confusion_matrix.png', dpi=300, bbox_inches='tight')
     plt.close()
     
     # Plot sentiment distribution
-    plt.figure(figsize=(10, 6))
-    evaluation_results['results']['sentiment'].value_counts().plot(kind='bar')
-    plt.title('Distribución de Sentimientos Predichos')
-    plt.xlabel('Sentimiento')
-    plt.ylabel('Cantidad')
+    plt.figure(figsize=(12, 6))
+    sentiment_counts = evaluation_results['results']['sentiment'].value_counts()
+    colors = ['#2ecc71', '#f1c40f', '#e74c3c']  # Verde, Amarillo, Rojo
+    ax = sentiment_counts.plot(kind='bar', color=colors)
+    plt.title('Distribución de Sentimientos Predichos', pad=20, fontsize=14)
+    plt.xlabel('Sentimiento', fontsize=12)
+    plt.ylabel('Cantidad', fontsize=12)
+    
+    # Agregar porcentajes sobre las barras
+    total = len(evaluation_results['results'])
+    for i, v in enumerate(sentiment_counts):
+        ax.text(i, v, f'{v}\n({v/total:.1%})', ha='center', va='bottom')
+    
     plt.tight_layout()
-    plt.savefig('sentiment_distribution.png')
+    plt.savefig('sentiment_distribution.png', dpi=300, bbox_inches='tight')
     plt.close()
     
     # Plot polarity distribution
-    plt.figure(figsize=(10, 6))
-    sns.histplot(evaluation_results['results']['polarity'], bins=20)
-    plt.title('Distribución de Polaridad de Sentimiento')
-    plt.xlabel('Polaridad')
-    plt.ylabel('Frecuencia')
+    plt.figure(figsize=(12, 6))
+    sns.histplot(evaluation_results['results']['polarity'], 
+                 bins=30, 
+                 kde=True,
+                 color='#3498db')
+    plt.title('Distribución de Polaridad de Sentimiento', pad=20, fontsize=14)
+    plt.xlabel('Polaridad', fontsize=12)
+    plt.ylabel('Frecuencia', fontsize=12)
+    
+    # Agregar líneas verticales para los umbrales
+    plt.axvline(x=0.25, color='#e74c3c', linestyle='--', alpha=0.5, label='Umbral Positivo')
+    plt.axvline(x=-0.25, color='#e74c3c', linestyle='--', alpha=0.5, label='Umbral Negativo')
+    plt.legend()
+    
     plt.tight_layout()
-    plt.savefig('polarity_distribution.png')
+    plt.savefig('polarity_distribution.png', dpi=300, bbox_inches='tight')
     plt.close()
     
     # Plot confidence by sentiment
-    plt.figure(figsize=(10, 6))
-    evaluation_results['confidence_by_sentiment'].plot(kind='bar')
-    plt.title('Confianza Promedio por Sentimiento')
-    plt.xlabel('Sentimiento')
-    plt.ylabel('Confianza Promedio')
+    plt.figure(figsize=(12, 6))
+    confidence_data = evaluation_results['confidence_by_sentiment']
+    ax = confidence_data.plot(kind='bar', color=colors)
+    plt.title('Confianza Promedio por Sentimiento', pad=20, fontsize=14)
+    plt.xlabel('Sentimiento', fontsize=12)
+    plt.ylabel('Confianza Promedio', fontsize=12)
+    
+    # Agregar valores sobre las barras
+    for i, v in enumerate(confidence_data):
+        ax.text(i, v, f'{v:.3f}', ha='center', va='bottom')
+    
     plt.tight_layout()
-    plt.savefig('confidence_by_sentiment.png')
+    plt.savefig('confidence_by_sentiment.png', dpi=300, bbox_inches='tight')
     plt.close()
 
 def main():
