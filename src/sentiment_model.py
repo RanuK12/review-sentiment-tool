@@ -55,13 +55,22 @@ def analyze_sentiment(text):
     # Calcular sentimiento específico del dominio
     domain_polarity = calculate_domain_sentiment(processed_text)
     
+    # Si hay palabras positivas y negativas, reducir la polaridad
+    words = set(processed_text.split())
+    has_positive = bool(words.intersection(HOTEL_POSITIVE_KEYWORDS))
+    has_negative = bool(words.intersection(HOTEL_NEGATIVE_KEYWORDS))
+    
+    if has_positive and has_negative:
+        # Si hay palabras mixtas, reducir la polaridad
+        textblob_polarity *= 0.5
+    
     # Combinar ambos resultados (99% TextBlob, 1% palabras clave)
     combined_polarity = 0.99 * textblob_polarity + 0.01 * domain_polarity
     
     # Determinar el sentimiento basado en la polaridad combinada
-    if combined_polarity > 0.15:  # Reducido de 0.2 a 0.15
+    if combined_polarity > 0.15:
         sentiment = "Positivo"
-    elif combined_polarity < -0.15:  # Reducido de -0.2 a -0.15
+    elif combined_polarity < -0.15:
         sentiment = "Negativo"
     else:
         sentiment = "Neutral"
