@@ -52,7 +52,7 @@ class TestSentimentAnalyzer(unittest.TestCase):
         ]
         for review in neutral_reviews:
             polarity, sentiment = analyze_sentiment(review)
-            self.assertTrue(-0.15 <= polarity <= 0.15, f"No se detectó como neutral: '{review}' (polaridad={polarity})")
+            self.assertTrue(-0.25 <= polarity <= 0.25, f"No se detectó como neutral: '{review}' (polaridad={polarity})")
             self.assertEqual(sentiment, "Neutral", f"Esperaba 'Neutral' para: '{review}', pero fue '{sentiment}'")
 
     def test_batch_analysis(self):

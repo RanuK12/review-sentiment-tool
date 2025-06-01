@@ -4,9 +4,10 @@ import pandas as pd
 
 # Palabras clave que suelen aparecer en reseñas de hoteles. ¡Ayudan a afinar el análisis!
 HOTEL_POSITIVE_KEYWORDS = {
-    'amazing', 'excellent', 'perfect', 'beautiful', 'wonderful', 'great', 'clean',
-    'comfortable', 'friendly', 'helpful', 'spacious', 'modern', 'luxury', 'stunning',
-    'outstanding', 'fantastic', 'impressive', 'delicious', 'convenient', 'recommended'
+    'amazing', 'excellent', 'perfect', 'beautiful', 'wonderful', 'great',
+    'comfortable', 'friendly', 'helpful', 'spacious', 'modern', 'luxury',
+    'stunning', 'outstanding', 'fantastic', 'impressive', 'delicious',
+    'convenient', 'recommended'
 }
 
 HOTEL_NEGATIVE_KEYWORDS = {
@@ -59,11 +60,11 @@ def analyze_sentiment(text):
     # Añadimos el toque hotelero
     domain_polarity = calculate_domain_sentiment(processed_text)
     # Combinamos ambos resultados para un veredicto más justo
-    combined_polarity = (textblob_polarity * 0.6) + (domain_polarity * 0.4)
+    combined_polarity = (textblob_polarity * 0.9) + (domain_polarity * 0.1)
     # Definimos los umbrales de cada sentimiento
-    if combined_polarity > 0.15:
+    if combined_polarity > 0.25:
         sentiment = 'Positivo'
-    elif combined_polarity < -0.15:
+    elif combined_polarity < -0.25:
         sentiment = 'Negativo'
     else:
         sentiment = 'Neutral'
