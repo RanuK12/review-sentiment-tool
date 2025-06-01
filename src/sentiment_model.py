@@ -55,13 +55,13 @@ def analyze_sentiment(text):
     # Calcular sentimiento específico del dominio
     domain_polarity = calculate_domain_sentiment(processed_text)
     
-    # Combinar ambos resultados (95% TextBlob, 5% palabras clave)
-    combined_polarity = 0.95 * textblob_polarity + 0.05 * domain_polarity
+    # Combinar ambos resultados (98% TextBlob, 2% palabras clave)
+    combined_polarity = 0.98 * textblob_polarity + 0.02 * domain_polarity
     
     # Determinar el sentimiento basado en la polaridad combinada
-    if combined_polarity > 0.25:  # Reducido de 0.3 a 0.25
+    if combined_polarity > 0.2:  # Reducido de 0.25 a 0.2
         sentiment = "Positivo"
-    elif combined_polarity < -0.25:  # Reducido de -0.3 a -0.25
+    elif combined_polarity < -0.2:  # Reducido de -0.25 a -0.2
         sentiment = "Negativo"
     else:
         sentiment = "Neutral"
