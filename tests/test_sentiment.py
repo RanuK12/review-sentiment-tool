@@ -1,3 +1,4 @@
+# Forzar actualización del test para GitHub Actions
 import unittest
 from src.sentiment_model import analyze_sentiment, batch_analyze, get_sentiment_details
 import pandas as pd
