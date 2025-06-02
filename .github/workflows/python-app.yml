@@ -17,6 +17,13 @@ jobs:
       with:
         fetch-depth: 0
     
+    - name: 🛠️ Install System Dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y python3-tk
+        sudo apt-get install -y libgl1-mesa-glx
+        sudo apt-get install -y libglib2.0-0
+    
     - name: 🐍 Setup Python Environment
       uses: actions/setup-python@v5
       with:
@@ -29,6 +36,8 @@ jobs:
         python --version
         echo "\nPip version:"
         pip --version
+        echo "\nSystem info:"
+        uname -a
     
     - name: 📦 Install Dependencies
       run: |
@@ -38,6 +47,8 @@ jobs:
         pip install -r requirements.txt
         echo "Installing development dependencies..."
         pip install pytest-cov flake8
+        echo "Verifying matplotlib backend..."
+        python -c "import matplotlib; print(f'Matplotlib backend: {matplotlib.get_backend()}')"
     
     - name: 📊 Show Installed Packages
       run: |
@@ -55,10 +66,39 @@ jobs:
         echo "Running tests with coverage..."
         python -m pytest tests/ --verbose --cov=. --cov-report=term-missing
     
+    - name: 🖼️ Generate Evaluation Charts
+      run: |
+        echo "Generating evaluation charts..."
+        python tests/evaluate_model.py
+        echo "Verifying chart generation..."
+        ls -l *.png
+    
+    - name: 📈 Show Coverage Report
+      run: |
+        echo "Coverage report:"
+        if [ -f .coverage ]; then
+          python -m coverage report
+        else
+          echo "No coverage file found."
+          exit 1
+        fi
+    
     - name: 📈 Save Coverage Report
       uses: actions/upload-artifact@v4
       with:
         name: coverage-report
         path: .coverage
+        retention-days: 7
+        if-no-files-found: error
+    
+    - name: 🖼️ Upload Evaluation Charts
+      uses: actions/upload-artifact@v4
+      with:
+        name: evaluation-charts
+        path: |
+          confusion_matrix.png
+          sentiment_distribution.png
+          polarity_distribution.png
+          confidence_by_sentiment.png
         retention-days: 7
         if-no-files-found: error 
