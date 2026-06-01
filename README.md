@@ -131,3 +131,6 @@ Here are some charts automatically generated when evaluating the model with real
 ![Confidence by Sentiment](confidence_by_sentiment.png)
 
 These charts help you visualize the robustness and behavior of the model in real-world scenarios. I hope you find them useful!
+## Licencia
+
+MIT — © 2026 Ranuk IT Solutions | ranuk.dev
